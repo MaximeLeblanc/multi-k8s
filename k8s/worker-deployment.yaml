@@ -11,12 +11,12 @@ spec:
     metadata:
       labels:
         component: worker
-      spec:
-        containers:
-          - name: worker
-            image: maximeleblanc/multi-worker
-            env:
-              - name: REDIS_HOST
-                value: redis-cluster-ip-service
-              - name: REDIS_PORT
-                value: '6379'
+    spec:
+      containers:
+        - name: worker
+          image: maximeleblanc/multi-worker
+          env:
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_PORT
+              value: "6379"

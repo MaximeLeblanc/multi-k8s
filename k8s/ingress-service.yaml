@@ -1,26 +1,68 @@
 apiVersion: networking.k8s.io/v1
+# UPDATE API
 kind: Ingress
 metadata:
   name: ingress-service
   annotations:
+    # REMOVE CLASSNAME ANNOTATION
     nginx.ingress.kubernetes.io/use-regex: "true"
+    # ADD ANNOTATION
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    # ADD ANNOTATION
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - k8s-multi.com
+        - www.k8s-multi.com
+      secretName: k8s-multi.com
+  # ADD INGRESSCLASSNAME FIELD
   rules:
-    - http:
+    - host: k8s-multi.com
+      http:
         paths:
           - path: /?(.*)
+            # UPDATE PATH
             pathType: ImplementationSpecific
+            # ADD PATHTYPE
             backend:
               service:
+                # UPDATE SERVICE FIELDS
                 name: client-cluster-ip-service
                 port:
                   number: 3000
           - path: /api/?(.*)
+            # UPDATE PATH
             pathType: ImplementationSpecific
+            # ADD PATHTYPE
             backend:
               service:
+                # UPDATE SERVICE FIELDS
+                name: server-cluster-ip-service
+                port:
+                  number: 5000
+    - host: www.k8s-multi.com
+      http:
+        paths:
+          - path: /?(.*)
+            # UPDATE PATH
+            pathType: ImplementationSpecific
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: client-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/?(.*)
+            # UPDATE PATH
+            pathType: ImplementationSpecific
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
                 name: server-cluster-ip-service
                 port:
                   number: 5000
